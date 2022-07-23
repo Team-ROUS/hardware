@@ -40,34 +40,7 @@ void setup(){
 }
 
 int curIdx = 10;
-void loop() { // Generate a Sine wave
-  //int Value = 128; //255= 3.3V 128=1.65V
-
-  int charidx = 0;
-  int argIdx = 0;
-  char buf[50];
-  while(Serial.available()) {
-    char k = Serial.read();
-    if (k != '\n') {
-      if (k == ',') {
-        buf[charidx++] = '\0';
-        if (charidx > 1) {
-          int argument = atoi(buf);
-          if (argIdx == 0) {
-            level = argument;
-          }
-          else if (argIdx == 1) {
-            curIdx = argument;
-          }
-        }
-        charidx = 0;
-        argIdx++;
-      }
-      else {
-        buf[charidx++] = k;
-      }
-    }
-  }
+void finish_buf_segment(char* buf, int charidx, int argIdx) {
   buf[charidx++] = '\0';
   if (charidx > 1) {
     int argument = atoi(buf);
@@ -78,6 +51,28 @@ void loop() { // Generate a Sine wave
       curIdx = argument;
     }
   }
+}
+
+void loop() { // Generate a Sine wave
+  //int Value = 128; //255= 3.3V 128=1.65V
+
+  int charidx = 0;
+  int argIdx = 0;
+  char buf[50];
+  while(Serial.available()) {
+    char k = Serial.read();
+    if (k != '\n') {
+      if (k == ',') {
+        finish_buf_segment(buf, charidx, argIdx);
+        charidx = 0;
+        argIdx++;
+      }
+      else {
+        buf[charidx++] = k;
+      }
+    }
+  }
+  finish_buf_segment(buf, charidx, argIdx);
 
 
   y_current = y_start[level] * CELL_LENGTH;
