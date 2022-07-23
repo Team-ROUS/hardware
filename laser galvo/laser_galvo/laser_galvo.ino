@@ -45,38 +45,37 @@ void loop() { // Generate a Sine wave
 
   int charidx = 0;
   int argIdx = 0;
-  char buf[2][50];
-  int arguments[2];
+  char buf[50];
   while(Serial.available()) {
     char k = Serial.read();
     if (k != '\n') {
       if (k == ',') {
-        buf[argIdx][charidx++] = '\0';
+        buf[charidx++] = '\0';
         if (charidx > 1) {
-          arguments[argIdx] = atoi(buf[argIdx]);
+          int argument = atoi(buf);
           if (argIdx == 0) {
-            level = arguments[argIdx];
+            level = argument;
           }
           else if (argIdx == 1) {
-            curIdx = arguments[argIdx];
+            curIdx = argument;
           }
         }
         charidx = 0;
         argIdx++;
       }
       else {
-        buf[argIdx][charidx++] = k;
+        buf[charidx++] = k;
       }
     }
   }
-  buf[argIdx][charidx++] = '\0';
+  buf[charidx++] = '\0';
   if (charidx > 1) {
-    arguments[argIdx] = atoi(buf[argIdx]);
+    int argument = atoi(buf);
     if (argIdx == 0) {
-      level = arguments[argIdx];
+      level = argument;
     }
     else if (argIdx == 1) {
-      curIdx = arguments[argIdx];
+      curIdx = argument;
     }
   }
 
