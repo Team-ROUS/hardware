@@ -39,19 +39,25 @@ void setup(){
   Serial.begin(9600);
 }
 
+int curidx = 10;
 void loop() { // Generate a Sine wave
   //int Value = 128; //255= 3.3V 128=1.65V
 
-//  while(Serial.available()) {
-//    mapData= Serial.readString();// read the incoming data as string
-//    Serial.println(mapData);
-//  }
-//
+  while(Serial.available()) {
+    char k = Serial.read();
+    if (k != '\n') {
+      char charBuf[50];
+      charBuf[0] = k;
+      charBuf[1] = '\0';
+      curidx = atoi(charBuf);
+    }
+  }
+
   y_current = y_start[level] * CELL_LENGTH;
   x_current = x_start[level] * CELL_LENGTH;
   
   for(int i =0; i < strlen(mapData[level]); i++ ) {
-    cellStep(mapData[level][i]);
+    cellStep(mapData[level][i], i, curidx);
   }
   //drawMouse(mouseX, mouseY);
   drawMouse(mouseX, mouseY);
@@ -69,7 +75,7 @@ void loop() { // Generate a Sine wave
   
 }
 
-void cellStep(char dir){
+void cellStep(char dir, int i, int curidx){
   if(dir == 'u'){
     y_current += CELL_LENGTH;
   }
@@ -86,6 +92,10 @@ void cellStep(char dir){
   byte yFlipped = map(y_current,0,255,255,0);
   dacWrite(DACY, yFlipped);
   delayMicroseconds(300);
+
+  if (i == curidx) {
+    drawMouse(x_current, yFlipped);
+  }
   
   //Serial.printf("%d %d %d %d\n", mouseX,mouseY,x_current,yFlipped);
 //  if(mouseX == x_current && mouseY == yFlipped){
