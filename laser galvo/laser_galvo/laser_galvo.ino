@@ -21,7 +21,7 @@ char mapData[][100] = {
   "ruurdrruuuuluuurrdruullllluuurrdruuurddddrrdddrddddrurddruuruuuuruuullldldrrdllluuuuurrrrdrr"
 };
                     
-byte level = 2;
+int level = 2;
 
 byte arrow[5][2] = {{128,0},
                   {128,255},
@@ -39,28 +39,53 @@ void setup(){
   Serial.begin(9600);
 }
 
-int curidx = 10;
+int curIdx = 10;
 void loop() { // Generate a Sine wave
   //int Value = 128; //255= 3.3V 128=1.65V
 
   int charidx = 0;
-  char charBuf[50];
+  int argIdx = 0;
+  char buf[2][50];
+  int arguments[2];
   while(Serial.available()) {
     char k = Serial.read();
     if (k != '\n') {
-      charBuf[charidx++] = k;
+      if (k == ',') {
+        buf[argIdx][charidx++] = '\0';
+        if (charidx > 1) {
+          arguments[argIdx] = atoi(buf[argIdx]);
+          if (argIdx == 0) {
+            level = arguments[argIdx];
+          }
+          else if (argIdx == 1) {
+            curIdx = arguments[argIdx];
+          }
+        }
+        charidx = 0;
+        argIdx++;
+      }
+      else {
+        buf[argIdx][charidx++] = k;
+      }
     }
   }
-  charBuf[charidx++] = '\0';
+  buf[argIdx][charidx++] = '\0';
   if (charidx > 1) {
-    curidx = atoi(charBuf);
+    arguments[argIdx] = atoi(buf[argIdx]);
+    if (argIdx == 0) {
+      level = arguments[argIdx];
+    }
+    else if (argIdx == 1) {
+      curIdx = arguments[argIdx];
+    }
   }
+
 
   y_current = y_start[level] * CELL_LENGTH;
   x_current = x_start[level] * CELL_LENGTH;
   
   for(int i =0; i < strlen(mapData[level]); i++ ) {
-    cellStep(mapData[level][i], i, curidx);
+    cellStep(mapData[level][i], i, curIdx);
   }
   //drawMouse(mouseX, mouseY);
   drawMouse(mouseX, mouseY);
@@ -78,7 +103,7 @@ void loop() { // Generate a Sine wave
   
 }
 
-void cellStep(char dir, int i, int curidx){
+void cellStep(char dir, int i, int curIdx){
   if(dir == 'u'){
     y_current += CELL_LENGTH;
   }
@@ -96,7 +121,7 @@ void cellStep(char dir, int i, int curidx){
   dacWrite(DACY, yFlipped);
   delayMicroseconds(300);
 
-  if (i == curidx) {
+  if (i == curIdx) {
     drawMouse(x_current, yFlipped);
   }
   
