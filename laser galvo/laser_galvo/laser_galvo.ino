@@ -5,6 +5,11 @@
 
 #define CELL_COUNT 17 // factors 1, 3, 5, 15, 17, 51, 85, 255
 
+#define MAX(x, y) (((x) > (y)) ? (x) : (y))
+#define MIN(x, y) (((x) < (y)) ? (x) : (y))
+
+#define CLAMP(x) MAX(MIN(x, 255), 0)
+
 byte CELL_LENGTH = POS_MAX / CELL_COUNT;
 
 byte x_current = 0;
@@ -120,20 +125,20 @@ void drawArrow(int angle){
   }
 }
 
-void drawMouse(byte x, byte y){
-  dacWrite(DACX, x+5);
-  dacWrite(DACY, y+5);
+void drawMouse(int x, int y){
+  dacWrite(DACX, CLAMP(x+5));
+  dacWrite(DACY, CLAMP(y+5));
   delayMicroseconds(200);
-  dacWrite(DACX, x-5);
-  dacWrite(DACY, y-5);
+  dacWrite(DACX, CLAMP(x-5));
+  dacWrite(DACY, CLAMP(y-5));
   delayMicroseconds(200);
-  dacWrite(DACX, x);
-  dacWrite(DACY, y);
+  dacWrite(DACX, CLAMP(x));
+  dacWrite(DACY, CLAMP(y));
   delayMicroseconds(200);
-  dacWrite(DACX, x+5);
-  dacWrite(DACY, y-5);
+  dacWrite(DACX, CLAMP(x+5));
+  dacWrite(DACY, CLAMP(y-5));
   delayMicroseconds(200);
-  dacWrite(DACX, x-5);
-  dacWrite(DACY, y+5);
+  dacWrite(DACX, CLAMP(x-5));
+  dacWrite(DACY, CLAMP(y+5);
   delayMicroseconds(200);
 }
