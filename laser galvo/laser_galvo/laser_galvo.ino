@@ -81,18 +81,10 @@ void loop() { // Generate a Sine wave
   for(int i =0; i < strlen(mapData[level]); i++ ) {
     cellStep(mapData[level][i], i, curIdx);
   }
-  //drawMouse(mouseX, mouseY);
-  drawMouse(mouseX, mouseY);
 
   unsigned long currentMillis = millis();
   if (currentMillis - previousMillis >= interval) {
     previousMillis = currentMillis;
-
-//    level++;
-//    if(level == 5){
-//      level = 0;
-//    }
-    //Serial.println(level);
   }
   
 }
@@ -118,11 +110,6 @@ void cellStep(char dir, int i, int curIdx){
   if (i == curIdx) {
     drawMouse(x_current, yFlipped);
   }
-  
-  //Serial.printf("%d %d %d %d\n", mouseX,mouseY,x_current,yFlipped);
-//  if(mouseX == x_current && mouseY == yFlipped){
-//    
-//  }
 }
 
 void drawArrow(int angle){
