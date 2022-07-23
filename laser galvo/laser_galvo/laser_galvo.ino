@@ -43,14 +43,17 @@ int curidx = 10;
 void loop() { // Generate a Sine wave
   //int Value = 128; //255= 3.3V 128=1.65V
 
+  int charidx = 0;
+  char charBuf[50];
   while(Serial.available()) {
     char k = Serial.read();
     if (k != '\n') {
-      char charBuf[50];
-      charBuf[0] = k;
-      charBuf[1] = '\0';
-      curidx = atoi(charBuf);
+      charBuf[charidx++] = k;
     }
+  }
+  charBuf[charidx++] = '\0';
+  if (charidx > 1) {
+    curidx = atoi(charBuf);
   }
 
   y_current = y_start[level] * CELL_LENGTH;
