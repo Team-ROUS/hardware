@@ -7,10 +7,33 @@
 
 byte CELL_LENGTH = POS_MAX / CELL_COUNT;
 
-byte X_CURRENT = 0;
-byte Y_CURRENT = 0;
+byte x_current = 0;
+byte y_current = 0;
 
-char mapData[] = "LULULULULULULULULU";
+
+byte x_start[] = {0,2,0, 0, 0};
+byte y_start[] = {6,0,12,14,0};
+char mapData[][100] = {
+  "rrrrrrrrrrruuurrrr",
+  "rrrrruuuuurrrrruuurrr",
+  "rrrrrrdddlllddddrrrrrruuuuurrrddddddddd",
+  "rddrruurrrrrrdldlulldddrrrrrurrdddlldllululllddrrddllluuuldddddluuuuuldddddddrrrrruurrddrrrrruuulll",
+  "ruurdrruuuuluuurrdruullllluuurrdruuurddddrrdddrddddrurddruuruuuuruuullldldrrdllluuuuurrrrdrr"
+};
+                    
+byte level = 2;
+
+byte arrow[5][2] = {{128,0},
+                  {128,255},
+                  {78,170},
+                  {178,170},
+                  {128,255}};
+                  
+unsigned long previousMillis = 0;  
+const long interval = 1000;
+
+byte mouseX = map(12,0,14,0,255);
+byte mouseY = map(3,0,14,0,255);
 
 void setup(){
   Serial.begin(9600);
@@ -23,29 +46,75 @@ void loop() { // Generate a Sine wave
 //    mapData= Serial.readString();// read the incoming data as string
 //    Serial.println(mapData);
 //  }
-//  
-  for(int i =0; i < strlen(mapData); i++ ) {
-    cellStep(mapData[i]);
+//
+  y_current = y_start[level] * CELL_LENGTH;
+  x_current = x_start[level] * CELL_LENGTH;
+  
+  for(int i =0; i < strlen(mapData[level]); i++ ) {
+    cellStep(mapData[level][i]);
   }
-  for(int i = strlen(mapData)-1; i >= 0; i-- ) {
-    cellStep(mapData[i]);
+  //drawMouse(mouseX, mouseY);
+  drawMouse(mouseX, mouseY);
+
+  unsigned long currentMillis = millis();
+  if (currentMillis - previousMillis >= interval) {
+    previousMillis = currentMillis;
+
+//    level++;
+//    if(level == 5){
+//      level = 0;
+//    }
+    //Serial.println(level);
   }
+  
 }
 
 void cellStep(char dir){
-  if(dir == 'U'){
-    Y_CURRENT += CELL_LENGTH;
+  if(dir == 'u'){
+    y_current += CELL_LENGTH;
   }
-  if(dir == 'D'){
-    Y_CURRENT -= CELL_LENGTH;
+  if(dir == 'd'){
+    y_current -= CELL_LENGTH;
   }
-  if(dir == 'L'){
-    X_CURRENT -= CELL_LENGTH;
+  if(dir == 'l'){
+    x_current -= CELL_LENGTH;
   }
-  if(dir == 'R'){
-    X_CURRENT += CELL_LENGTH;
+  if(dir == 'r'){
+    x_current += CELL_LENGTH;
   }
-  dacWrite(DACX, X_CURRENT);
-  dacWrite(DACY, Y_CURRENT);
-  delayMicroseconds(1000);
+  dacWrite(DACX, x_current);
+  byte yFlipped = map(y_current,0,255,255,0);
+  dacWrite(DACY, yFlipped);
+  delayMicroseconds(300);
+  
+  //Serial.printf("%d %d %d %d\n", mouseX,mouseY,x_current,yFlipped);
+//  if(mouseX == x_current && mouseY == yFlipped){
+//    
+//  }
+}
+
+void drawArrow(int angle){
+  for(int i = 0; i < 5; i++){
+    dacWrite(DACX, arrow[i][0]);
+    dacWrite(DACY, arrow[i][1]);
+    delayMicroseconds(400);
+  }
+}
+
+void drawMouse(byte x, byte y){
+  dacWrite(DACX, x+5);
+  dacWrite(DACY, y+5);
+  delayMicroseconds(200);
+  dacWrite(DACX, x-5);
+  dacWrite(DACY, y-5);
+  delayMicroseconds(200);
+  dacWrite(DACX, x);
+  dacWrite(DACY, y);
+  delayMicroseconds(200);
+  dacWrite(DACX, x+5);
+  dacWrite(DACY, y-5);
+  delayMicroseconds(200);
+  dacWrite(DACX, x-5);
+  dacWrite(DACY, y+5);
+  delayMicroseconds(200);
 }
