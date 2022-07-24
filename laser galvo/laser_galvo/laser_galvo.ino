@@ -27,7 +27,7 @@ char mapData[][100] = {
 };
 
 // TODO: start hidden
-int level = 2;
+int level = 255;
 
 unsigned long previousMillis = 0;  
 const long interval = 1000;
@@ -74,12 +74,16 @@ void loop() { // Generate a Sine wave
   }
   finish_buf_segment(buf, charidx, argIdx);
 
-
-  y_current = y_start[level] * CELL_LENGTH;
-  x_current = x_start[level] * CELL_LENGTH;
-  
-  for(int i =0; i < strlen(mapData[level]); i++ ) {
-    cellStep(mapData[level][i], i, curIdx);
+  if (level == 255) {
+    drawHeart();
+  }
+  else {
+    y_current = y_start[level] * CELL_LENGTH;
+    x_current = x_start[level] * CELL_LENGTH;
+    
+    for(int i =0; i < strlen(mapData[level]); i++ ) {
+      cellStep(mapData[level][i], i, curIdx);
+    }
   }
 
   unsigned long currentMillis = millis();
@@ -90,7 +94,7 @@ void loop() { // Generate a Sine wave
 }
 
 byte get_y_flipped(byte y) {
-  return map(y_current,0,255,255,0);
+  return map(y,0,255,255,0);
 }
 
 void cellStep(char dir, int i, int curIdx) {
@@ -135,4 +139,46 @@ void drawMouse(int x, int y){
   dacWrite(DACX, CLAMP(x));
   dacWrite(DACY, CLAMP(y));
   delayMicroseconds(200);
+}
+
+byte arrow[5][2] = {{128,0},
+                  {128,255},
+                  {78,170},
+                  {178,170},
+                  {128,255}};
+                  
+
+void drawHeart(){
+
+    dacWrite(DACX, 7*CELL_LENGTH);
+    dacWrite(DACY, get_y_flipped(0*CELL_LENGTH));
+    delayMicroseconds(400);
+
+    dacWrite(DACX, 1*CELL_LENGTH);
+    dacWrite(DACY, get_y_flipped(7*CELL_LENGTH));
+    delayMicroseconds(200);
+
+    dacWrite(DACX, 1*CELL_LENGTH);
+    dacWrite(DACY, get_y_flipped(11*CELL_LENGTH));
+    delayMicroseconds(200);
+
+    dacWrite(DACX, 4*CELL_LENGTH);
+    dacWrite(DACY, get_y_flipped(14*CELL_LENGTH));
+    delayMicroseconds(200);
+
+    dacWrite(DACX, 7*CELL_LENGTH);
+    dacWrite(DACY, get_y_flipped(11*CELL_LENGTH));
+    delayMicroseconds(400);
+
+    dacWrite(DACX, 11*CELL_LENGTH);
+    dacWrite(DACY, get_y_flipped(14*CELL_LENGTH));
+    delayMicroseconds(200);
+
+    dacWrite(DACX, 13*CELL_LENGTH);
+    dacWrite(DACY, get_y_flipped(11*CELL_LENGTH));
+    delayMicroseconds(200);
+
+    dacWrite(DACX, 13*CELL_LENGTH);
+    dacWrite(DACY, get_y_flipped(7*CELL_LENGTH));
+    delayMicroseconds(200);
 }
