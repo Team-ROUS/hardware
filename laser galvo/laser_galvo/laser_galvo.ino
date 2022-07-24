@@ -145,4 +145,7 @@ void drawMouse(int x, int y){
   dacWrite(DACX, CLAMP(x-5));
   dacWrite(DACY, CLAMP(y+5));
   delayMicroseconds(200);
+  dacWrite(DACX, CLAMP(x));
+  dacWrite(DACY, CLAMP(y));
+  delayMicroseconds(200);
 }
