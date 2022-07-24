@@ -94,7 +94,11 @@ void loop() { // Generate a Sine wave
   
 }
 
-void cellStep(char dir, int i, int curIdx){
+void cellStep(char dir, int i, int curIdx) {
+  if (i == curIdx) {
+    drawMouse(x_current, yFlipped);
+  }
+  
   if(dir == 'u'){
     y_current += CELL_LENGTH;
   }
@@ -111,10 +115,6 @@ void cellStep(char dir, int i, int curIdx){
   byte yFlipped = map(y_current,0,255,255,0);
   dacWrite(DACY, yFlipped);
   delayMicroseconds(300);
-
-  if (i == curIdx) {
-    drawMouse(x_current, yFlipped);
-  }
 }
 
 void drawArrow(int angle){
