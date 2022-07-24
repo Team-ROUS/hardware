@@ -26,7 +26,6 @@ char mapData[][100] = {
   "ruurdrruuuuluuurrdruullllluuurrdruuurddddrrdddrddddrurddruuruuuuruuullldldrrdllluuuuurrrrdrr"
 };
 
-// TODO: start hidden
 int level = 255;
 
 unsigned long previousMillis = 0;  
