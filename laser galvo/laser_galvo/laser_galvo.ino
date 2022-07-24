@@ -28,6 +28,7 @@ char mapData[][100] = {
                     
 int level = 2;
 
+// TODO: delete
 byte arrow[5][2] = {{128,0},
                   {128,255},
                   {78,170},
