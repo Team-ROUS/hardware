@@ -25,16 +25,10 @@ char mapData[][100] = {
   "rddrruurrrrrrdldlulldddrrrrrurrdddlldllululllddrrddllluuuldddddluuuuuldddddddrrrrruurrddrrrrruuulll",
   "ruurdrruuuuluuurrdruullllluuurrdruuurddddrrdddrddddrurddruuruuuuruuullldldrrdllluuuuurrrrdrr"
 };
-                    
+
+// TODO: start hidden
 int level = 2;
 
-// TODO: delete
-byte arrow[5][2] = {{128,0},
-                  {128,255},
-                  {78,170},
-                  {178,170},
-                  {128,255}};
-                  
 unsigned long previousMillis = 0;  
 const long interval = 1000;
 
@@ -121,13 +115,6 @@ void cellStep(char dir, int i, int curIdx) {
   delayMicroseconds(300);
 }
 
-void drawArrow(int angle){
-  for(int i = 0; i < 5; i++){
-    dacWrite(DACX, arrow[i][0]);
-    dacWrite(DACY, arrow[i][1]);
-    delayMicroseconds(400);
-  }
-}
 
 void drawMouse(int x, int y){
   dacWrite(DACX, CLAMP(x+5));
